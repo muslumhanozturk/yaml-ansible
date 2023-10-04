@@ -4,8 +4,8 @@
    - name: Remove Apache
      ansible.builtin.yum:
        name: httpd
-       state: absent
-       autoremove: yes
+       state: absent           # When set to "absent" the package is removed.
+       autoremove: yes         # Ensures dependencies are automatically cleaned up after the parent package is uninstalled.
 
 - name: Remove Apache from ubuntuservers
   hosts: ubuntuservers
@@ -15,4 +15,4 @@
        name: apache2
        state: absent
        autoremove: yes
-       purge: yes
+       purge: yes          # the package's configuration files are also deleted

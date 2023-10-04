@@ -12,18 +12,18 @@
        dest: /var/www/html/index.html
 
    - name: restart apache2
-     ansible.builtin.service:
-       name: apache2
-       state: restarted
-       enabled: yes
+     ansible.builtin.service:      # It is used to manage services.
+       name: apache2               # Name of the service to be processed
+       state: restarted            # the service is restarted.
+       enabled: yes                # Specifies whether the service will be automatically enabled at system startup.
 
 - name: Apache and wget installation for webservers
   hosts: webservers
   tasks:
     - name: installing httpd and wget
       ansible.builtin.yum:
-        pkg: "{{ item }}"
-        state: present
-      loop:
+        pkg: "{{ item }}"          # Specifies the packages to be installed. httpd and wget packages specified in the loop block are used with the item variable.
+        state: present             # Checks whether the specified packages are installed. When set to "present", it indicates that the specified packages should be installed.
+      loop:                        # It allows it to process a series of packets as a loop. takes values in order
         - httpd
         - wget

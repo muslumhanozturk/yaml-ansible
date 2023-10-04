@@ -2,9 +2,9 @@
   hosts: webservers
   tasks:
    - name: Copy your file to the webservers
-     ansible.builtin.copy:
-       src: /home/ec2-user/testfile1
-       dest: /home/ec2-user/testfile1
+     ansible.builtin.copy:                   # Copying a file will be done using the ansible.builtin.copy module.
+       src: /home/ec2-user/testfile1         # path to source file
+       dest: /home/ec2-user/testfile1        # destination path of the file
 
 - name: Copy for ubuntu
   hosts: ubuntuservers

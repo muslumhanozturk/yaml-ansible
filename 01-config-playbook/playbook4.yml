@@ -2,18 +2,18 @@
   hosts: webservers
   tasks:
    - name: install the latest version of Apache
-     ansible.builtin.yum:
-       name: httpd
-       state: latest
+     ansible.builtin.yum:                        # This module is used to perform package management tasks in Red Hat-based Linux distributions.
+       name: httpd                               # Name of the package to be installed: httpd
+       state: latest                             # Specifies the status of the package and installs the latest version.
 
    - name: start Apache
-     ansible.builtin.shell: "service httpd start"
+     ansible.builtin.shell: "service httpd start"  # Defines that the second task is the process of executing a shell command. Apache HTTP Server is started with the command "service httpd start".
 
 - name: Apache installation for ubuntuservers
   hosts: ubuntuservers
   tasks:
    - name: update
-     ansible.builtin.shell: "apt update -y"
+     ansible.builtin.shell: "apt update -y"   # Updates package updates using the ansible.builtin.shell module
      
    - name: install the latest version of Apache
      ansible.builtin.apt:

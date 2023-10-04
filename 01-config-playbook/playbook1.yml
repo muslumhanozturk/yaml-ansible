@@ -1,5 +1,5 @@
-- name: Test Connectivity
+- name: Test Connectivity    # playbook name
   hosts: all
   tasks:
-   - name: Ping test
-     ansible.builtin.ping:   # 
+   - name: Ping test         # task name
+     ansible.builtin.ping:   # A ping test will be performed using the ping module

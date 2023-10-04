@@ -5,10 +5,10 @@
      ansible.builtin.copy:
        src: /home/ec2-user/testfile1
        dest: /home/ec2-user/testfile1
-       mode: u+rw,g-wx,o-rwx
-
-- name: Copy for ubuntu
-  hosts: ubuntuservers
+       mode: u+rw,g-wx,o-rwx           # Sets access permissions for the copied file;     ↓                 ↓                   ↓
+                                                                                     # preserves read and write permissions (rw) for the user (u) who owns the file.
+- name: Copy for ubuntu                                                              # removes write permission (w) for group (g)
+  hosts: ubuntuservers                                                               # gives no permissions to others (o) (-rwx)
   tasks:
    - name: Copy your file to the ubuntuservers
      ansible.builtin.copy:
@@ -21,8 +21,8 @@
   tasks:
    - name: Copy using inline content
      ansible.builtin.copy:
-       content: 'This is content of file2'
-       dest: /home/ec2-user/testfile2
+       content: 'This is content of file2'   # content of the file to be created
+       dest: /home/ec2-user/testfile2        # the content will be written to the file at this path
 
    - name: Create a new text file
-     ansible.builtin.shell: "echo Hello World > /home/ec2-user/testfile3"
+     ansible.builtin.shell: "echo Hello World > /home/ec2-user/testfile3"    # Defines that the second task is the process of executing a shell command.

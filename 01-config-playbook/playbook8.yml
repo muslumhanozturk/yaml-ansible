@@ -1,16 +1,16 @@
 - name: Create users
-  hosts: "*"
+  hosts: "*"                                  # Specifies that the playbook will be applied to all servers
   tasks:
     - name: Create user for REDHAT OS FAMILY
-      ansible.builtin.user:
+      ansible.builtin.user:                   # for user creation task. It is used for the management of user accounts.
         name: "{{ item }}"
-        state: present
+        state: present                        # They are created if the specified users do not exist.
       loop:
         - joe
         - matt
         - james
         - oliver
-      when: ansible_os_family == "RedHat"
+      when: ansible_os_family == "RedHat"     # Ensures that the task runs only when ansible_os_family is defined as "RedHat".
 
     - name: Create user for SUSE OS FAMILY
       ansible.builtin.user:
@@ -28,4 +28,4 @@
       loop:
         - john
         - aaron
-      when: ansible_os_family == "Debian" or ansible_distribution_version == "20.04"
+      when: ansible_os_family == "Debian" or ansible_distribution_version == "20.04"    # Makes it work if family is "Debian" or version "20.04"
