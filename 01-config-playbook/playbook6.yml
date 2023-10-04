@@ -1,5 +1,6 @@
 - name: Apache installation and configuration for ubuntuservers
   hosts: ubuntuservers
+  become: true                    # With -b it functions the same as the sudo command
   tasks:
    - name: installing apache
      ansible.builtin.apt:
