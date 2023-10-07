@@ -1,0 +1,9 @@
+# dynamic inventory file must be in "...aws_ec2.yml" format
+
+plugin: aws_ec2                    # To access AWS EC2 resources
+regions:
+- "us-east-1"
+keyed_groups:                      # https://docs.ansible.com/ansible/latest/collections/amazon/aws/docsite/aws_ec2_guide.html
+- key: tags.Name
+compose:
+  ansible_host: public_ip_address  # Specifies how each instance will be represented.

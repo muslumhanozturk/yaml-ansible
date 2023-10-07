@@ -1,0 +1,10 @@
+- name: create a user
+  hosts: all
+  become: true
+  vars_files:                     # variables files
+    - myuser.yml
+  tasks:
+    - name: creating user
+      ansible.builtin.user:       # It is a task that aims to create users using Ansible's "user" module.
+        name: "{{ username }}"
+        password: "{{ password }}"

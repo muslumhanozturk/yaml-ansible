@@ -1,0 +1,9 @@
+- hosts: all
+  tasks:
+  - name: show IP address
+    ansible.builtin.debug:
+      msg: >                      # Indicates that the message to be displayed has started. When it starts with a ">" sign, it represents a multi-line message conforming to YAML format.
+       This host uses IP address {{ ansible_facts.default_ipv4.address }}
+
+      # Alternative:
+      # This host uses IP address {{ ansible_facts['default_ipv4']['address'] }}

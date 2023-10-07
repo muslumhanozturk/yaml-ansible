@@ -1,0 +1,7 @@
+- name: show facts
+  hosts: all
+  tasks:
+    - name: print facts
+      ansible.builtin.debug:   # It is a task used to display information using Ansible's "debug" module.
+        var: ansible_facts     # It contains comprehensive information including target machines' system information, environmental variables, IP addresses, hardware information, and more.
+        
