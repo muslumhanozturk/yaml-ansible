@@ -1,0 +1,24 @@
+- hosts: servers
+ # any_errors_fatal: true        # It is used to ensure that the playbook stops when any error occurs.
+ # strategy: free                # Tasks in the playbook run simultaneously on all target servers.
+ # serial: 2                     # Determines how many servers will be tasked at the same time.
+  tasks:
+    - ansible.builtin.debug:
+        msg: "task 1"
+
+    - ansible.builtin.debug:
+        msg: "task 2"
+
+# our intention is to make node3 fail in the third task.
+    - name: task 3
+      become: true
+      ansible.builtin.apt:
+        name: git
+        state: present
+   #   ignore_errors: true      # Mistakes are ignored and the playbook continues.
+
+    - ansible.builtin.debug:
+        msg: "task 4"
+
+    - ansible.builtin.debug:
+        msg: "task 5"
