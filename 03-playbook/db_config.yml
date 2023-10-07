@@ -1,0 +1,79 @@
+- name: db configuration
+  become: true
+  hosts: db_server
+  vars:
+    hostname: cw_db_server
+    db_name: phonebook_db
+    db_table: phonebook
+    db_user: remoteUser
+    db_password: clarus1234
+
+  tasks:
+    - name: set hostname
+      ansible.builtin.shell: "sudo hostnamectl set-hostname {{ hostname }}"
+
+    - name: Installing Mysql  and dependencies
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - mysql-server
+        - mysql-client
+        - python3-mysqldb
+        - libmysqlclient-dev
+
+    - name: start and enable mysql service
+      ansible.builtin.service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: creating mysql user
+      community.mysql.mysql_user:       # Used to manage MySQL users
+        name: "{{ db_user }}" 
+        password: "{{ db_password }}"
+        priv: '*.*:ALL'                 # The user is authorized for all transactions in all databases
+        host: '%'                       # Allows connection from all IP addresses.
+        state: present
+
+    - name: copy the sql script
+      ansible.builtin.copy:
+        src: /home/ubuntu/ansible-lesson/phonebook/init.sql
+        dest: ~/
+
+    - name: creating phonebook_db      # mysql database module
+      community.mysql.mysql_db:
+        name: "{{ db_name }}"
+        state: present
+
+    - name: check if the database has the table
+      ansible.builtin.shell: |                                                 # checks the existence of the table
+        echo "USE {{ db_name }}; show tables like '{{ db_table }}'; " | mysql    
+      register: resultOfShowTables     # It is used to save the output of the command to a variable and resultOfShowTables saves the output to this variable
+
+    - name: DEBUG
+      ansible.builtin.debug:
+        var: resultOfShowTables
+
+    - name: Import database table
+      community.mysql.mysql_db:
+        name: "{{ db_name }}"   # This is the database schema name.
+        state: import  # This module is not idempotent when the state property value is import.
+        target: ~/init.sql # This script creates the products table.
+      when: resultOfShowTables.stdout == "" # This line checks if the table is already imported. If so this task doesn't run.
+
+    - name: Enable remote login to mysql
+      ansible.builtin.lineinfile:                   # used to replace or add lines in the file
+         path: /etc/mysql/mysql.conf.d/mysqld.cnf   # file path to process
+         regexp: '^bind-address'                    # finds lines with "bind-address" at the beginning
+         line: 'bind-address = 0.0.0.0'             # If it finds the above pattern, it adds this line to the file or replaces the relevant line with this if it exists.
+         backup: yes                                # determines whether the file is backed up
+      notify:                                       # This is used to send a notification when the task is completed.
+         - Restart mysql
+
+  handlers:                                         # Work depends on another task
+    - name: Restart mysql
+      ansible.builtin.service:
+        name: mysql
+        state: restarted
