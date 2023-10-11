@@ -1,36 +1,40 @@
-- name: install docker
+- name: Install Docker
   hosts: all
   become: true
   tasks:
-    - name: set mydistribution
-      ansible.builtin.set_fact:
-        mydistribution: "{{ 'rhel' if (ansible_distribution == 'Red Hat Enterprise Linux') else (ansible_distribution | lower) }}"
-
-    - name: Add signing key
-      ansible.builtin.rpm_key:
-        key: "https://download.docker.com/linux/{{ mydistribution }}/gpg"
-        state: present
-
-    - name: Add repository into repo.d list
-      ansible.builtin.yum_repository:
-        name: docker
-        description: docker repository
-        baseurl: "https://download.docker.com/linux/{{ mydistribution }}/$releasever/$basearch/stable"
-        enable: true
-        gpgcheck: true
-        gpgkey: "https://download.docker.com/linux/{{ mydistribution }}/gpg"
-
-    - name: Install Docker
+    - name: Upgrade all packages
       ansible.builtin.yum:
-        name:
+        name: "*"
+        state: latest
+
+    - name: Install yum-utils package
+      ansible.builtin.yum:
+        name: yum-utils
+        state: latest
+
+    - name: Download docker-ce.repo
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+
+    - name: Install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+      ansible.builtin.yum:
+        name: 
           - docker-ce
           - docker-ce-cli
           - containerd.io
-        state: latest
-        update_cache: true
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
 
     - name: Start Docker
       ansible.builtin.service:
-        name: "docker"
-        enabled: true
+        name: docker
         state: started
+        enabled: yes
+
+    - name: Add ec2-user to the docker group
+      ansible.builtin.user:
+        name: ec2-user
+        groups: docker
+        append: yes
