@@ -38,3 +38,21 @@
         name: ec2-user
         groups: docker
         append: yes
+
+    - name: Copy database file to postgresql node
+      ansible.builtin.copy:
+        src: /home/ec2-user/todo-app-pern/database
+        dest: /home/ec2-user
+      when: ansible_facts['default_ipv4']['address'] == "172.31.25.68"   # postgresql private address
+
+    - name: Copy database file to postgresql node
+      ansible.builtin.copy:
+        src: /home/ec2-user/todo-app-pern/server
+        dest: /home/ec2-user
+      when: ansible_facts['default_ipv4']['address'] == "172.31.25.68"   # nodejs private address
+      
+    - name: Copy database file to postgresql node
+      ansible.builtin.copy:
+        src: /home/ec2-user/todo-app-pern/client
+        dest: /home/ec2-user
+      when: ansible_facts['default_ipv4']['address'] == "172.31.25.68"   # react private address
